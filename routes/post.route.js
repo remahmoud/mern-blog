@@ -19,4 +19,7 @@ router.put("/:postId", isAuth, validator(schema.post), Controller.update);
 // ----- Delete Post By ID ----- //
 router.delete("/:postId", isAuth, Controller.delete);
 
+// ----- Like Post By ID ----- //
+router.post("/:postId/like", isAuth, Controller.like);
+
 module.exports = router;

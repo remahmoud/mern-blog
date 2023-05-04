@@ -33,10 +33,19 @@ class PostController {
     }
     // update post by id
     async update(req, res) {
+        // get authenticated user
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(400).json({ message: "invalid user" });
+        }
         // get post
         const post = await Post.findById(req.params.postId);
         if (!post) {
             return res.status(400).json({ message: "invalid post" });
+        }
+        // check if the user is post author
+        if (user._id.toString() !== post.author.toString()) {
+            return res.status(400).json({ message: "access denied" });
         }
         // set new data
         post.set(req.body);
@@ -47,15 +56,48 @@ class PostController {
     }
     // delete post by id controller
     async delete(req, res) {
+        // get authenticated user
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(400).json({ message: "invalid user" });
+        }
         // get post
         const post = await Post.findById(req.params.postId);
         if (!post) {
             return res.status(400).json({ message: "invalid post" });
         }
+        // check if the user is post author
+        if (user._id.toString() !== post.author.toString()) {
+            return res.status(400).json({ message: "access denied" });
+        }
         // delete post
         await post.deleteOne();
         // response
         return res.status(200).json({ message: "post deleted successfully" });
+    }
+    // like post by id controller
+    async like(req, res) {
+        // get authenticated user
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(400).json({ message: "invalid user" });
+        }
+        // get post
+        const post = await Post.findById(req.params.postId);
+        if (!post) {
+            return res.status(400).json({ message: "invalid post" });
+        }
+        if (post.likes.includes(user._id.toString())) {
+            // remove like
+            post.likes.pull(user._id)
+        } else {
+            // like post
+            post.likes.addToSet(user._id)
+        }
+
+        await post.save()
+        // response
+        return res.status(200).json(post.likes);
     }
 }
 

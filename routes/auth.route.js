@@ -5,7 +5,7 @@ const validator = require("../middleware/validator");
 const isAuth = require("../middleware/isAuth");
 
 // ---- User Data ---- //
-router.get("/me", isAuth, Controller.getMyData);
+router.get("/whoami", isAuth, Controller.getMyData);
 
 // ---- User Login ---- //
 router.post("/login", validator(schema.login), Controller.login);
