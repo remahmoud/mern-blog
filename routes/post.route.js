@@ -7,6 +7,9 @@ const isAuth = require("../middleware/isAuth");
 // ----- Get Posts for homepage ----- //
 router.get("/", Controller.getAll);
 
+// ----- Get Posts for dashboard ----- //
+router.get("/me", isAuth, Controller.getByAuthor);
+
 // ----- Get Post By ID ----- //
 router.get("/:postId", Controller.getById);
 

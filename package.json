@@ -8,6 +8,7 @@
     "private": false,
     "dependencies": {
         "bcrypt": "^5.1.0",
+        "concurrently": "^8.0.1",
         "cors": "^2.8.5",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
@@ -21,6 +22,8 @@
         "nodemon": "^2.0.22"
     },
     "scripts": {
-        "dev": "nodemon server.js"
+        "server": "nodemon server.js",
+        "client": "yarn --cwd client dev",
+        "dev": "concurrently \"yarn server\" \"yarn client\""
     }
 }

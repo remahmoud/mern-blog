@@ -10,10 +10,24 @@ class PostController {
         // response
         return res.status(200).json(post);
     }
+    // get posts by author
+    async getByAuthor(req, res) {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(400).json({ message: "invalid user" });
+        }
+        // get posts
+        const posts = await Post.find({ author: user._id }).populate("author");
+        // response
+        return res.status(200).json(posts);
+    }
     // get posts for home page
     async getAll(req, res) {
         // get posts
-        const posts = await Post.find().limit(10).populate("author");
+        const posts = await Post.find()
+            .limit(10)
+            .populate("author")
+            .sort("-createdAt");
         // response
         return res.status(200).json(posts);
     }
@@ -25,9 +39,10 @@ class PostController {
             return res.status(400).json({ message: "invalid user" });
         }
         // create new post instance
-        const post = new Post({ ...req.body, author: user._id });
+        let post = new Post({ ...req.body, author: user._id });
         // save post
         await post.save();
+        post = await post.populate("author");
         // response
         return res.status(201).json(post);
     }
@@ -73,7 +88,7 @@ class PostController {
         // delete post
         await post.deleteOne();
         // response
-        return res.status(200).json({ message: "post deleted successfully" });
+        return res.status(200).json(post);
     }
     // like post by id controller
     async like(req, res) {
@@ -89,13 +104,13 @@ class PostController {
         }
         if (post.likes.includes(user._id.toString())) {
             // remove like
-            post.likes.pull(user._id)
+            post.likes.pull(user._id);
         } else {
             // like post
-            post.likes.addToSet(user._id)
+            post.likes.addToSet(user._id);
         }
 
-        await post.save()
+        await post.save();
         // response
         return res.status(200).json(post.likes);
     }

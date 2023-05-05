@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .form__label {
+        @apply block mb-1 ml-1 text-sm font-medium text-gray-900;
+    }
+    .form__input {
+        @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none block w-full p-2.5;
+    }
+}
+
+body {
+    background-color: #f5f6f7;
+}
+#root {
+    @apply h-screen flex flex-col;
+}
